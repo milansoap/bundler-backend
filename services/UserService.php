@@ -1,6 +1,6 @@
 <?php
-include_once '../models/User.php';
-include_once '../config/Database.php';
+include_once './models/User.php';
+include_once './config/Database.php';
 
 
 class UserService {
@@ -9,8 +9,8 @@ class UserService {
     private $table_name = "users";
 
     public function __construct() {
-        global $db;
-        $this->db = $db;
+        $database = new Database();
+        $this->db = $database->connect();
     }
 
     public function getAllUsers() {
