@@ -17,10 +17,10 @@ class UserController {
                 }
                 break;
             case 'POST':
-                // $this->createUser();  // Create a new user
+                $this->createUser();  // Create a new user
                 break;
             case 'PUT':
-                // $this->updateUser($id);  // Update user by ID
+                $this->updateUser($id);  // Update user by ID
                 break;
             case 'DELETE':
                 // $this->deleteUser($id);  // Delete user by ID
@@ -43,5 +43,24 @@ class UserController {
         $users = $this->userService->getUserById($id);
         header('Content-Type: application/json');
         echo json_encode($users);
+    }
+    public function createUser() {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->userService->createUser($data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
+    public function updateUser($id) {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $result = $this->userService->updateUser($id, $data);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
+
+    public function deleteUser($id) {
+        $result = $this->userService->deleteUser($id);
+        header('Content-Type: application/json');
+        echo json_encode($result);
     }
 }

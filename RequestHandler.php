@@ -18,22 +18,20 @@ class RequestHandler {
                     $userController->getAllUsers();
                 }
                 break;
+            case 'POST':
+                $userController->createUser();
+                break;
+            case 'PUT':
+                if ($id) {
+                    $userController->updateUser($id);
+                }
+                break;
 
-                // case 'POST':
-                //     $userController->createUser();
-                //     break;
-
-                // case 'PUT':
-                //     if ($id) {
-                //         $userController->updateUser($id);
-                //     }
-                //     break;
-
-                // case 'DELETE':
-                //     if ($id) {
-                //         $userController->deleteUser($id);
-                //     }
-                //     break;
+            case 'DELETE':
+                if ($id) {
+                    $userController->deleteUser($id);
+                }
+                break;
         }
     }
 }
