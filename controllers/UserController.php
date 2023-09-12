@@ -2,35 +2,40 @@
 include_once './services/UserService.php';
 
 class UserController {
+
     private $userService;
+
     public function __construct() {
         $this->userService = new UserService();
     }
 
-    public function handleRequest($method, $id, $action = null) {
+    public function handleUsersRequest(string $method, ?string $id): void {
+        $userController = new UserController();
         switch ($method) {
             case 'GET':
                 if ($id) {
-                    $this->getUserById($id);  // Fetch a single user by ID
+                    $userController->getUserById($id);
                 } else {
-                    $this->getAllUsers();  // Fetch all users
+                    $userController->getAllUsers();
                 }
                 break;
             case 'POST':
-                $this->createUser();  // Create a new user
+                $userController->createUser();
                 break;
             case 'PUT':
-                $this->updateUser($id);  // Update user by ID
+                if ($id) {
+                    $userController->updateUser($id);
+                }
                 break;
+
             case 'DELETE':
-                // $this->deleteUser($id);  // Delete user by ID
-                break;
-            default:
-                http_response_code(405);  // Method Not Allowed
-                echo json_encode(["error" => "Method not allowed"]);
+                if ($id) {
+                    $userController->deleteUser($id);
+                }
                 break;
         }
     }
+
     private function sendJsonResponse($data) {
         header('Content-Type: application/json');
         echo json_encode($data);

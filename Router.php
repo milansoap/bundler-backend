@@ -2,12 +2,10 @@
 
 namespace Router;
 
-
-require './RequestHandler.php';
-
 use DTO\RequestApiDTO; // Importing the RequestApiDTO
+use DTO\Auth\LoginRequestDTO;
 use UserController;
-use Router\RequestHandler;
+use AuthController;
 
 
 class Router {
@@ -15,12 +13,19 @@ class Router {
         $endpoint = $requestDTO->endpoint;
         $id = $requestDTO->id;
         $action = $requestDTO->action;
-        $handler = new RequestHandler();
+        $userController = new UserController();
+        $authController = new AuthController();
 
 
         switch ($endpoint) {
             case 'users':
-                $handler->handleUsersRequest($requestDTO->method, $id);
+                $userController->handleUsersRequest($requestDTO->method, $id);
+                break;
+            case 'login':
+                $authController->login();
+                break;
+            case 'register':
+                $authController->register();
                 break;
             default:
                 http_response_code(404);
