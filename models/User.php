@@ -1,12 +1,12 @@
 <?php
-class User {
+class User implements JsonSerializable {
     private $id;
     private $email;
     private $password;
     private $created_at;
     private $updated_at;
 
-    public function __construct($id, $email, $password, $created_at, $updated_at) {
+    public function __construct($id = null, $email = null, $password = null, $created_at = null, $updated_at = null) {
         $this->id = $id;
         $this->email = $email;
         $this->password = $password;
@@ -46,5 +46,15 @@ class User {
     }
     public function setUpdatedAt($updated_at) {
         $this->updated_at = $updated_at;
+    }
+
+    public function jsonSerialize() {
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'password' => $this->password,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
     }
 }

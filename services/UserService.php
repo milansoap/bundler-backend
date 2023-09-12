@@ -4,7 +4,6 @@ include_once './config/Database.php';
 
 
 class UserService {
-    private $userModel;
     private $db;
     private $table_name = "users";
 
@@ -13,26 +12,26 @@ class UserService {
         $this->db = $database->connect();
     }
 
-    public function getAllUsers() {
+    /**
+     * @return User[]
+     */
+    public function getAllUsers(): array {
         $query = "SELECT * FROM " . $this->table_name;
         $stmt = $this->db->prepare($query);
         $stmt->execute();
 
         $users = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $user = [
-                'id' => $row['id'],
-                'email' => $row['email'],
-                'password' => $row['password'],
-                'created_at' => $row['created_at'],
-                'updated_at' => $row['updated_at']
-            ];
+            $user = new User($row['id'], $row['email'], $row['password'], $row['created_at'], $row['updated_at']);
             array_push($users, $user);
         }
 
         return $users;
     }
 
+    /**
+     * @return User
+     */
     public function getUserById($id) {
         $query = "SELECT * FROM " . $this->table_name . " WHERE id = :id";
         $stmt = $this->db->prepare($query);
