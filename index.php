@@ -1,9 +1,10 @@
 <?php
 
-use Router\Cors;
-use Router\ErrorHandler;
-use Router\Router; // Import Router instead of Handler
-use DTO\RequestApiDTO; // Make sure this is the correct namespace
+require_once './autoloader.php';
+
+use Cors\Cors;
+use DTO\RequestApiDTO;
+use Router\Router;
 
 set_error_handler([ErrorHandler::class, 'handleError']);
 set_exception_handler([ErrorHandler::class, 'handleException']);

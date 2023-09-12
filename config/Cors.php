@@ -1,6 +1,6 @@
 <?php
 
-namespace Router;
+namespace Cors;
 
 class Cors {
     public static function allowHeaders() {

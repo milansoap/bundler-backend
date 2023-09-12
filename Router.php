@@ -2,15 +2,20 @@
 
 namespace Router;
 
+
+require './RequestHandler.php';
+
 use DTO\RequestApiDTO; // Importing the RequestApiDTO
 use UserController;
+use Router\RequestHandler;
+
 
 class Router {
     public function route(RequestApiDTO $requestDTO) {
         $endpoint = $requestDTO->endpoint;
         $id = $requestDTO->id;
         $action = $requestDTO->action;
-        $handler = new Handler();
+        $handler = new RequestHandler();
 
 
         switch ($endpoint) {
