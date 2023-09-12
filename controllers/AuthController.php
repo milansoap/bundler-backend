@@ -11,22 +11,7 @@ class AuthController {
     public function __construct() {
         $this->authService = new AuthService();
     }
-
-    // public function handleRequest($action) {
-    //     switch ($action) {
-    //         case 'LOGIN':
-    //             $this->login();  // Login
-    //             break;
-    //         case 'REGISTER':
-    //             $this->register();  // Register
-    //             break;
-    //         default:
-    //             http_response_code(405);  // Method Not Allowed
-    //             echo json_encode(["error" => "Method not allowed"]);
-    //             break;
-    //     }
-    // }
-
+    
     public function login() {
         $data = json_decode(file_get_contents('php://input'), true);
         $loginRequest = new LoginRequestDTO($data['email'], $data['password']);
