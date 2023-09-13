@@ -6,7 +6,6 @@ require_once './config/Cors.php';
 require_once './controllers/UserController.php';
 require_once './controllers/AuthController.php';
 require_once './dto/LoginRequestDTO.php';
-
-
+require_once './controllers/ElementController.php';
 
 use Cors\Cors;

@@ -6,6 +6,7 @@ use DTO\RequestApiDTO; // Importing the RequestApiDTO
 use DTO\Auth\LoginRequestDTO;
 use UserController;
 use AuthController;
+use ElementController;
 
 
 class Router {
@@ -15,11 +16,16 @@ class Router {
         $action = $requestDTO->action;
         $userController = new UserController();
         $authController = new AuthController();
+        $elementController = new ElementController();
+
 
 
         switch ($endpoint) {
             case 'users':
                 $userController->handleUsersRequest($requestDTO->method, $id);
+                break;
+            case 'elements':
+                $elementController->handleElementRequest($requestDTO->method, $id);
                 break;
             case 'login':
                 $authController->login();

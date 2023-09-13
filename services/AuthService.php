@@ -1,8 +1,10 @@
 <?php
 include_once './models/User.php';
 include_once './config/Database.php';
+require __DIR__ . '../../vendor/autoload.php';
 
 use DTO\Auth\LoginRequestDTO;
+use \Firebase\JWT\JWT;
 
 
 class AuthService {
@@ -26,11 +28,18 @@ class AuthService {
             if ($stmt->rowCount() > 0) {
                 $row = $stmt->fetch(PDO::FETCH_ASSOC);
                 if (password_verify($password, $row['password'])) {
-                    // User authenticated
+                    $key = "your_secret_key";
+                    $payload = [
+                        "id" => $row['id'],
+                        "email" => $email,
+                        "exp" => time() + (60 * 60)
+                    ];
+                    $jwt = JWT::encode($payload, $key, 'HS256');
+
                     return [
                         "status" => "OK",
                         "message" => "Login successful",
-                        "user" => new User(/* your user data */)
+                        "access_token" => $jwt
                     ];
                 } else {
                     return ["status" => "Error", "message" => "Invalid password"];

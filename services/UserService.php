@@ -53,7 +53,8 @@ class UserService {
     }
 
     public function createUser($data) {
-        $query = "INSERT INTO " . $this->table_name . " (email, password, name, surname, failed_attempts, is_locked, created_at, updated_at) VALUES (:email, :password, :name, :surname, :failed_attempts, :is_locked, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
+        $query = "INSERT INTO " .
+            $this->table_name . " (email, password, name, surname, failed_attempts, is_locked, created_at, updated_at) VALUES (:email, :password, :name, :surname, :failed_attempts, :is_locked, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)";
         $stmt = $this->db->prepare($query);
 
         // Bind parameters

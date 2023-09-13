@@ -17,7 +17,7 @@
     $id = $parts[3] ?? null;
     $action = $parts[4] ?? null;
 
-    $request = new RequestApiDTO($method, $endpoint, $id, $action); // Make sure the class name matches
+    $request = new RequestApiDTO($method, $endpoint, $id, $action);
 
-    $router = new Router(); // Use Router instead of Handler
-    $router->route($request); // Call the route method of Router
+    $router = new Router();
+    $router->route($request);
