@@ -15,13 +15,13 @@ class ElementService {
     }
 
     public function getAllNonCustomElements(): array {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE is_custom = 0";  // Add condition to fetch non-custom elements
+        $query = "SELECT * FROM " . $this->table_name . " WHERE is_custom = 0";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
 
         $elements = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $configQuery = "SELECT * FROM configurations WHERE id = :configuration_id";  // Match with configuration_id from elements table
+            $configQuery = "SELECT * FROM configurations WHERE id = :configuration_id";
             $configStmt = $this->db->prepare($configQuery);
             $configStmt->bindParam(":configuration_id", $row['configuration_id']);
             $configStmt->execute();
@@ -35,17 +35,21 @@ class ElementService {
                     $configRow['border_color'],
                     $configRow['font_size'],
                     $configRow['font_family'],
-                    $configRow['content']
+                    $configRow['content'],
+                    $configRow['element_type'],
+                    $configRow['margin'],
+                    $configRow['padding'],
+                    $configRow['border_width'],
+                    $configRow['border_style'],
+                    $configRow['border_radius']
                 );
             } else {
-                $configuration = null;  // or a new Configuration with default values
+                $configuration = null; // or a new Configuration with default values
             }
-
 
             $element = new Element($row['id'], $row['type'], $row['name'], $row['is_custom'], $configuration);
             array_push($elements, $element);
         }
-
         return $elements;
     }
 }
