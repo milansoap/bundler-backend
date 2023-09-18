@@ -5,8 +5,9 @@ class Element implements JsonSerializable {
     private $name;
     private $is_custom;
     private ?Configuration $configuration;
-    /** @var Element[] */
-    private array $childrenElements;
+    // /** @var Element[] */
+    // private array $children_elements;
+    private $page_id;
 
     public function __construct(
         $id = null,
@@ -14,14 +15,14 @@ class Element implements JsonSerializable {
         $name = null,
         $is_custom = null,
         $configuration = null,
-        $childrenElements = []
+        $page_id = null
     ) {
         $this->id = $id;
         $this->type = $type;
         $this->name = $name;
         $this->is_custom = $is_custom;
         $this->configuration = $configuration;
-        $this->childrenElements = $childrenElements;
+        $this->page_id = $page_id;
     }
 
     // Getters
@@ -40,8 +41,11 @@ class Element implements JsonSerializable {
     public function getConfiguration() {
         return $this->configuration;
     }
-    public function getChildrenElements() {
-        return $this->childrenElements;
+    // public function getChildrenElements() {
+    //     return $this->children_elements;
+    // }
+    public function getPageId() {
+        return $this->page_id;
     }
 
     // Setters
@@ -60,9 +64,9 @@ class Element implements JsonSerializable {
     public function setConfiguration($configuration) {
         $this->configuration = $configuration;
     }
-    public function setChildrenElements($childrenElements) {
-        $this->childrenElements = $childrenElements;
-    }
+    // public function setChildrenElements($children_elements) {
+    //     $this->children_elements = $children_elements;
+    // }
 
     public function jsonSerialize() {
         return [
@@ -71,7 +75,8 @@ class Element implements JsonSerializable {
             'name' => $this->name,
             'is_custom' => $this->is_custom,
             'configuration' => $this->configuration ? $this->configuration->jsonSerialize() : null,
-            'children_elements' => $this->childrenElements
+            // 'children_elements' => $this->children_elements,
+            'page_id' => $this->page_id,
         ];
     }
 }

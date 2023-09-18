@@ -2,6 +2,7 @@
 include_once './models/User.php';
 include_once './config/Database.php';
 
+use \Firebase\JWT\JWT;
 
 class UserService {
     private $db;
@@ -49,6 +50,24 @@ class UserService {
             ];
         } else {
             return null;
+        }
+    }
+
+    public function getUserByToken($token) {
+        list($header, $payload, $signature) = explode('.', $token);
+
+        $decoded_payload = base64_decode($payload);
+        $decoded_array = json_decode($decoded_payload, true);
+
+        if ($decoded_array && array_key_exists('id', $decoded_array)) {
+            $userId = $decoded_array['id'];
+            $email = $decoded_array['email'];
+
+            http_response_code(200);
+            echo json_encode(['success' => true, 'user' => ['id' => $userId, 'email' => $email]]);
+        } else {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'message' => 'Invalid token']);
         }
     }
 

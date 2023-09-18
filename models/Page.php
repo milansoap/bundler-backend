@@ -1,13 +1,16 @@
 <?php
 class Page implements JsonSerializable {
     private $id;
-    private $users_id;
-    private $content;
+    private $user_id;
+    private $title;
+    /** @var Element[] */
+    private array $elements;
 
-    public function __construct($id = null, $users_id = null, $content = null) {
+    public function __construct($id = null, $user_id = null, $elements = null, $title = null) {
         $this->id = $id;
-        $this->users_id = $users_id;
-        $this->content = $content;
+        $this->user_id = $user_id;
+        $this->elements = $elements;
+        $this->title = $title;
     }
 
     // Getters
@@ -15,28 +18,34 @@ class Page implements JsonSerializable {
         return $this->id;
     }
     public function getUsersId() {
-        return $this->users_id;
+        return $this->user_id;
     }
-    public function getContent() {
-        return $this->content;
+    public function getElements() {
+        return $this->elements;
+    }
+    public function getTitle() {
+        return $this->title;
     }
 
     // Setters
     public function setId($id) {
         $this->id = $id;
     }
-    public function setUsersId($users_id) {
-        $this->users_id = $users_id;
+    public function setUsersId($user_id) {
+        $this->user_id = $user_id;
     }
-    public function setContent($content) {
-        $this->content = $content;
+    public function setElements($elements) {
+        $this->elements = $elements;
     }
-
+    public function setTitle($title) {
+        $this->title = $title;
+    }
     public function jsonSerialize() {
         return [
             'id' => $this->id,
-            'users_id' => $this->users_id,
-            'content' => $this->content,
+            'title' => $this->title,
+            'user_id' => $this->user_id,
+            'elements' => $this->elements,
         ];
     }
 }

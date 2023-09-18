@@ -7,6 +7,7 @@ use DTO\Auth\LoginRequestDTO;
 use UserController;
 use AuthController;
 use ElementController;
+use PageController;
 
 
 class Router {
@@ -17,6 +18,7 @@ class Router {
         $userController = new UserController();
         $authController = new AuthController();
         $elementController = new ElementController();
+        $pageController = new PageController();
 
 
 
@@ -26,6 +28,9 @@ class Router {
                 break;
             case 'elements':
                 $elementController->handleElementRequest($requestDTO->method, $id);
+                break;
+            case 'pages':
+                $pageController->handlePageRequest($requestDTO->method, $id);
                 break;
             case 'login':
                 $authController->login();

@@ -13,12 +13,26 @@ class UserController {
         $userController = new UserController();
         switch ($method) {
             case 'GET':
-                if ($id) {
+                if ($id === 'current') {
+                    // Fetch token from Authorization header
+                    $headers = apache_request_headers();
+                    $token = $headers['Authorization'] ?? null;
+
+                    if ($token) {
+                        // Process token (you might need to remove "Bearer " from the start)
+                        $actualToken = str_replace("Bearer ", "", $token);
+                        $userController->getUserByToken($actualToken);
+                    } else {
+                        http_response_code(401);
+                        echo json_encode(['success' => false, 'message' => 'Authorization token missing']);
+                    }
+                } else if ($id) {
                     $userController->getUserById($id);
                 } else {
                     $userController->getAllUsers();
                 }
                 break;
+
             case 'POST':
                 $userController->createUser();
                 break;
@@ -45,6 +59,10 @@ class UserController {
     public function getAllUsers() {
         $users = $this->userService->getAllUsers();
         $this->sendJsonResponse($users);
+    }
+    public function getUserByToken($token) {
+        $user = $this->userService->getUserByToken($token);
+        $this->sendJsonResponse($user);
     }
 
     public function getUserById($id) {

@@ -7,5 +7,7 @@ require_once './controllers/UserController.php';
 require_once './controllers/AuthController.php';
 require_once './dto/LoginRequestDTO.php';
 require_once './controllers/ElementController.php';
+require_once './controllers/PageController.php';
+
 
 use Cors\Cors;
