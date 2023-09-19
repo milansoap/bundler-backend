@@ -75,7 +75,8 @@ class PageService {
 
     public function savePage($data, $pageId) {
         $oldElements = $this->elementService->getAllElementsByPageId($pageId);
-        foreach ($data as $newElement) {
+        foreach ($data['elements'] as $newElement) {
+            print_r($data);
             $exists = false;  // Reset for each newElement
             foreach ($oldElements as $oldElement) {
                 if (is_array($newElement) && is_object($oldElement)) {
@@ -91,9 +92,10 @@ class PageService {
             }
             // OVDE UNOSIS SENDJEVENGER
             if ($exists) {
+                // error_log($newElement['unique_element_id'])
                 $exists = true;
-                error_log("Element exists. Updating...");
-                
+                // error_log("Element exists. Updating...");
+
                 $configurationObject = new Configuration(
                     $newElement['configuration']['id'],
                     $newElement['configuration']['text_color'],
@@ -118,17 +120,17 @@ class PageService {
                     $newElement['page_id'],
                     $newElement['unique_element_id']
                 );
-                error_log("Element exists. Updated.");
 
                 $this->elementService->updateElement($elementObject);
-                break;
-                var_dump("JEBENO POSTOJI VEC TAKAV ELEMENT SA TAKVIM ID-OM");
+                // var_dump("JEBENO POSTOJI VEC TAKAV ELEMENT SA TAKVIM ID-OM");
             }
             if (!$exists) {
+                print_r("tu sam");
+
                 // THEN CREATE A NEW ONE
-                var_dump("NE POSTOJI I MORAMO GA KREIRATIU");
+                // var_dump("NE POSTOJI I MORAMO GA KREIRATIU");
                 $configurationObject = new Configuration(
-                    $newElement['configuration']['id'],
+                    $newElement['configuration']['id'] = $this->generateNewConfigId(),
                     $newElement['configuration']['text_color'],
                     $newElement['configuration']['background_color'],
                     $newElement['configuration']['border_color'],
@@ -151,7 +153,7 @@ class PageService {
                     $newElement['page_id'],
                     $newElement['unique_element_id']
                 );
-                error_log("Element does not exist. Inserted.");
+                // error_log("Element does not exist. Inserted.");
 
                 $this->elementService->createElement($elementObject, $pageId);
             }

@@ -142,7 +142,7 @@ class ElementService {
 
             // Update the Element table
             $elementQuery = "UPDATE " . $this->table_name . " 
-                             SET type = :type, name = :name, is_custom = 1, page_id = :page_id 
+                             SET type = :type, name = :name, is_custom = 1, page_id = :page_id
                              WHERE id = :id";
             $elementStmt = $this->db->prepare($elementQuery);
 
@@ -151,17 +151,27 @@ class ElementService {
             $is_custom = $element->getIsCustom();
             $page_id = $element->getPageId();
             $id = $element->getId();
+            $uniqueElementId = $element->getUniqueElementId();
+            $configuration = $element->getConfiguration();
 
             $elementStmt->bindParam(':id', $id, PDO::PARAM_INT);
             $elementStmt->bindParam(':type', $type);
             $elementStmt->bindParam(':name', $name);
             $elementStmt->bindParam(':is_custom', $is_custom, PDO::PARAM_INT);
             $elementStmt->bindParam(':page_id', $page_id, PDO::PARAM_INT);
-            $elementStmt->execute();
+            $elementStmt->bindParam(':unique_element_id', $uniqueElementId, PDO::PARAM_INT);
+
+            $elementStmt->execute([
+                ':id' => $id,
+                ':type' => $type,
+                ':name' => $name,
+                ':page_id' => $page_id
+            ]);
+
+
+
 
             // Update the Configurations table
-            $configuration = $element->getConfiguration();
-            print_r(gettype($configuration));
 
             if ($configuration !== null) {
                 $configQuery = "UPDATE configurations 
@@ -189,7 +199,6 @@ class ElementService {
                 $border_style = $configuration->getBorderStyle();
                 $border_radius = $configuration->getBorderRadius();
 
-                print_r($font_size);
 
                 $configStmt->bindParam(':configuration_id', $configuration_id, PDO::PARAM_INT);
                 $configStmt->bindParam(':text_color', $text_color);
@@ -207,10 +216,15 @@ class ElementService {
 
 
                 $configStmt->execute();
+
+                print_r("TRU SAM");
+            } else {
+                return print_r("TRU SAM");
+                return false;
             }
             return true;
         } catch (PDOException $e) {
-            // Handle exception
+            print_r("Error: " . $e->getMessage());
             return false;
         }
     }
