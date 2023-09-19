@@ -21,7 +21,13 @@ class Element implements JsonSerializable {
         $this->type = $type;
         $this->name = $name;
         $this->is_custom = $is_custom;
-        $this->configuration = $configuration;
+
+        if (is_array($configuration)) {
+            $this->configuration = new Configuration($configuration);
+        } else {
+            $this->configuration = $configuration;
+        }
+
         $this->page_id = $page_id;
     }
 

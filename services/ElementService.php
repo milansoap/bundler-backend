@@ -1,4 +1,7 @@
 <?php
+
+use function PHPSTORM_META\type;
+
 include_once './models/User.php';
 include_once './models/Configuration.php';
 include_once './models/Element.php';
@@ -135,68 +138,138 @@ class ElementService {
 
     public function updateElement(Element $element): bool {
         try {
-            $elementQuery = "UPDATE " . $this->table_name . "
-                             SET type = :type, name = :name, is_custom = :is_custom, page_id = :page_id
-                             WHERE id = :id";
+            // print_r(gettype($element));
 
+            // Update the Element table
+            $elementQuery = "UPDATE " . $this->table_name . " 
+                             SET type = :type, name = :name, is_custom = :is_custom, page_id = :page_id 
+                             WHERE id = :id";
             $elementStmt = $this->db->prepare($elementQuery);
-            $elementStmt->bindParam(':type', $element->getType());
-            $elementStmt->bindParam(':name', $element->getName());
-            $elementStmt->bindParam(':is_custom', $element->getIsCustom(), PDO::PARAM_INT);
-            $elementStmt->bindParam(':page_id', $element->getPageId(), PDO::PARAM_INT);
-            $elementStmt->bindParam(':id', $element->getId(), PDO::PARAM_INT);
+
+            $type = $element->getType();
+            $name = $element->getName();
+            $is_custom = $element->getIsCustom();
+            $page_id = $element->getPageId();
+            $id = $element->getId();
+
+            $elementStmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $elementStmt->bindParam(':type', $type);
+            $elementStmt->bindParam(':name', $name);
+            $elementStmt->bindParam(':is_custom', $is_custom, PDO::PARAM_INT);
+            $elementStmt->bindParam(':page_id', $page_id, PDO::PARAM_INT);
             $elementStmt->execute();
 
-            $configQuery = "UPDATE configurations SET text_color = :text_color, background_color = :background_color, ... WHERE id = :configuration_id";
-            $configStmt = $this->db->prepare($configQuery);
-            $configStmt->execute((array) $element->getConfiguration());
+            // Update the Configurations table
+            $configuration = $element->getConfiguration();
+            print_r(gettype($configuration));
+
+            if ($configuration !== null) {
+                $configQuery = "UPDATE configurations 
+                                SET text_color = :text_color, background_color = :background_color, border_color = :border_color,
+                                font_size = :font_size, font_family = :font_family, content = :content, element_type = :element_type,
+                                margin = :margin, padding = :padding, border_width = :border_width, border_style = :border_style, 
+                                border_radius = :border_radius
+                                WHERE id = :configuration_id";
 
 
 
+                $configStmt = $this->db->prepare($configQuery);
+
+                $configuration_id = $configuration->getId();
+                $text_color = $configuration->getTextColor();
+                $background_color = $configuration->getBackgroundColor();
+                $border_color = $configuration->getBorderColor();
+                $font_size = $configuration->getFontSize();
+                $font_family = $configuration->getFontFamily();
+                $content = $configuration->getContent();
+                $element_type = $configuration->getElementType();
+                $margin = $configuration->getMargin();
+                $padding = $configuration->getPadding();
+                $border_width = $configuration->getBorderWidth();
+                $border_style = $configuration->getBorderStyle();
+                $border_radius = $configuration->getBorderRadius();
+
+                print_r($font_size);
+
+                $configStmt->bindParam(':configuration_id', $configuration_id, PDO::PARAM_INT);
+                $configStmt->bindParam(':text_color', $text_color);
+                $configStmt->bindParam(':background_color', $background_color);
+                $configStmt->bindParam(':border_color', $border_color);
+                $configStmt->bindParam(':font_size', $font_size);
+                $configStmt->bindParam(':font_family', $font_family);
+                $configStmt->bindParam(':content', $content);
+                $configStmt->bindParam(':element_type', $element_type);
+                $configStmt->bindParam(':margin', $margin);
+                $configStmt->bindParam(':padding', $padding);
+                $configStmt->bindParam(':border_width', $border_width);
+                $configStmt->bindParam(':border_style', $border_style);
+                $configStmt->bindParam(':border_radius', $border_radius);
+
+
+                $configStmt->execute();
+            }
             return true;
         } catch (PDOException $e) {
+            // Handle exception
             return false;
         }
     }
 
-
-
-    public function createElement(Element $element): bool {
+    public function createElement(Element $element, $pageId): bool {
         try {
-            // Insert the element's basic attributes
-            $elementQuery = "INSERT INTO " . $this->table_name . " (type, name, is_custom, page_id)
+            // Insert new Element
+            $elementQuery = "INSERT INTO " . $this->table_name . " (type, name, is_custom, page_id) 
                              VALUES (:type, :name, :is_custom, :page_id)";
-
             $elementStmt = $this->db->prepare($elementQuery);
-            $elementStmt->bindParam(':type', $element->getType());
-            $elementStmt->bindParam(':name', $element->getName());
-            $elementStmt->bindParam(':is_custom', $element->getIsCustom(), PDO::PARAM_INT);
-            $elementStmt->bindParam(':page_id', $element->getPageId(), PDO::PARAM_INT);
 
+            $type = $element->getType();
+            $name = $element->getName();
+            $is_custom = $element->getIsCustom();
+
+            $elementStmt->bindParam(':type', $type);
+            $elementStmt->bindParam(':name', $name);
+            $elementStmt->bindParam(':is_custom', $is_custom, PDO::PARAM_INT);
+            $elementStmt->bindParam(':page_id', $pageId, PDO::PARAM_INT);
             $elementStmt->execute();
 
-            $elementId = $this->db->lastInsertId(); // Get the last inserted element ID
+            $lastElementId = $this->db->lastInsertId();
 
-            // Insert related configuration attributes
-            $config = $element->getConfiguration();
-            $configQuery = "INSERT INTO configurations (text_color, background_color, ...) VALUES (:text_color, :background_color, ...)";
-            $configStmt = $this->db->prepare($configQuery);
-            $configStmt->execute((array) $element->getConfiguration());
+            // Insert new Configuration
+            $configuration = $element->getConfiguration();
+            if ($configuration !== null) {
+                $configQuery = "INSERT INTO configurations (text_color, background_color, border_color, font_size, font_family, content, element_type, margin, padding, border_width, border_style, border_radius)
+                                VALUES (:text_color, :background_color, :border_color, :font_size, :font_family, :content, :element_type, :margin, :padding, :border_width, :border_style, :border_radius)";
 
-            // Add other bindParam statements for other configuration attributes
+                $configStmt = $this->db->prepare($configQuery);
 
-            $configStmt->execute();
+                $text_color = $configuration->getTextColor();
+                $background_color = $configuration->getBackgroundColor();
+                $border_color = $configuration->getBorderColor();
+                $font_size = $configuration->getFontSize();
+                $font_family = $configuration->getFontFamily();
+                $content = $configuration->getContent();
+                $element_type = $configuration->getElementType();
+                $margin = $configuration->getMargin();
+                $padding = $configuration->getPadding();
+                $border_width = $configuration->getBorderWidth();
+                $border_style = $configuration->getBorderStyle();
+                $border_radius = $configuration->getBorderRadius();
 
-            $configId = $this->db->lastInsertId(); // Get the last inserted configuration ID
+                $configStmt->bindParam(':text_color', $text_color);
+                $configStmt->bindParam(':background_color', $background_color);
+                $configStmt->bindParam(':border_color', $border_color);
+                $configStmt->bindParam(':font_size', $font_size);
+                $configStmt->bindParam(':font_family', $font_family);
+                $configStmt->bindParam(':content', $content);
+                $configStmt->bindParam(':element_type', $element_type);
+                $configStmt->bindParam(':margin', $margin);
+                $configStmt->bindParam(':padding', $padding);
+                $configStmt->bindParam(':border_width', $border_width);
+                $configStmt->bindParam(':border_style', $border_style);
+                $configStmt->bindParam(':border_radius', $border_radius);
 
-            // Update the element with the configuration ID
-            $updateElementQuery = "UPDATE " . $this->table_name . " SET configuration_id = :config_id WHERE id = :id";
-            $updateElementStmt = $this->db->prepare($updateElementQuery);
-            $updateElementStmt->bindParam(':config_id', $configId, PDO::PARAM_INT);
-            $updateElementStmt->bindParam(':id', $elementId, PDO::PARAM_INT);
-
-            $updateElementStmt->execute();
-
+                $configStmt->execute();
+            }
             return true;
         } catch (PDOException $e) {
             // Handle exception

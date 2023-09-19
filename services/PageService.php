@@ -68,23 +68,100 @@ class PageService {
     }
 
     public function savePage($data, $pageId) {
-        $oldPages = $this->elementService->getAllElementsByPageId($pageId);
-
-        // foreach ($data as $newElement) {
-        //     $exists = false;
-
-        //     // Check if newElement already exists in oldElements
-        //     foreach ($oldElements as $oldElement) {
-        //       if ($newElement['id'] == $oldElement['id']) {
-        //         $exists = true;
-
-        //         $this->elementService->updateElement($newElement);
-        //         break;
-        //       }
-        //     }
+        $oldElements = $this->elementService->getAllElementsByPageId($pageId);
+        // print_r($oldElements);
+        // print_r($data);
 
 
+        foreach ($data as $newElement) {
+            $exists = false;
+            print_r("TRUE");
 
-        return $data;
+            foreach ($oldElements as $oldElement) {
+                if (is_array($newElement) && is_object($oldElement)) {
+                    if ($newElement['id'] == $oldElement->getId()) {
+                        $exists = true;
+                        // Create Configuration Object
+                        $configurationObject = new Configuration(
+                            $newElement['configuration']['id'],
+                            $newElement['configuration']['text_color'],
+                            $newElement['configuration']['background_color'],
+                            $newElement['configuration']['border_color'],
+                            $newElement['configuration']['font_size'],
+                            $newElement['configuration']['font_family'],
+                            $newElement['configuration']['content'],
+                            $newElement['configuration']['element_type'],
+                            $newElement['configuration']['margin'],
+                            $newElement['configuration']['padding'],
+                            $newElement['configuration']['border_width'],
+                            $newElement['configuration']['border_style'],
+                            $newElement['configuration']['border_radius'],
+                        );
+                        $elementObject = new Element(
+                            $newElement['id'],
+                            $newElement['type'],
+                            $newElement['name'],
+                            $newElement['is_custom'],
+                            $configurationObject,
+                            $newElement['page_id']
+                        );
+
+                        $this->elementService->updateElement($elementObject);
+                        break;
+                    }
+                } else {
+                    error_log("Mismatched types or unexpected data structures.");
+                }
+            }
+
+            if (!$exists) {
+
+                $configurationObject = new Configuration(
+                    $newElement['configuration']['id'],
+                    $newElement['configuration']['text_color'],
+                    $newElement['configuration']['background_color'],
+                    $newElement['configuration']['border_color'],
+                    $newElement['configuration']['font_size'],
+                    $newElement['configuration']['font_family'],
+                    $newElement['configuration']['content'],
+                    $newElement['configuration']['element_type'],
+                    $newElement['configuration']['margin'],
+                    $newElement['configuration']['padding'],
+                    $newElement['configuration']['border_width'],
+                    $newElement['configuration']['border_style'],
+                    $newElement['configuration']['border_radius'],
+                );
+                $elementObject = new Element(
+                    $newElement['id'],
+                    $newElement['type'],
+                    $newElement['name'],
+                    $newElement['is_custom'],
+                    $configurationObject,
+                    $newElement['page_id']
+                );
+
+                // return $elementObject;
+                $this->elementService->createElement($elementObject, $pageId);
+            }
+        }
+
+        // return $data;
     }
+
+    // foreach ($data as $newElement) {
+    //     $exists = false;
+
+    //     foreach ($oldElements as $oldElement) {
+    //         if (isset($newElement['id']) && isset($oldElement['id']) && $newElement['id'] == $oldElement['id']) {
+    //             $exists = true;
+    //             $this->elementService->updateElement($newElement);
+    //             break;
+    //         }
+    //     }
+
+    //     if (!$exists) {
+    //         $this->elementService->createElement($newElement, $pageId);
+    //     }
+    // }
+    // return $data;
 }
