@@ -128,7 +128,7 @@ class PageService {
                 // THEN CREATE A NEW ONE
                 var_dump("NE POSTOJI I MORAMO GA KREIRATIU");
                 $configurationObject = new Configuration(
-                    $newElement['configuration']['id'] = $this->generateNewConfigId(),
+                    $newElement['configuration']['id'],
                     $newElement['configuration']['text_color'],
                     $newElement['configuration']['background_color'],
                     $newElement['configuration']['border_color'],
