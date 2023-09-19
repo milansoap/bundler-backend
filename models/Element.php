@@ -8,6 +8,7 @@ class Element implements JsonSerializable {
     // /** @var Element[] */
     // private array $children_elements;
     private $page_id;
+    private $unique_element_id;
 
     public function __construct(
         $id = null,
@@ -15,7 +16,8 @@ class Element implements JsonSerializable {
         $name = null,
         $is_custom = null,
         $configuration = null,
-        $page_id = null
+        $page_id = null,
+        $unique_element_id = null
     ) {
         $this->id = $id;
         $this->type = $type;
@@ -29,6 +31,7 @@ class Element implements JsonSerializable {
         }
 
         $this->page_id = $page_id;
+        $this->unique_element_id = $unique_element_id;
     }
 
     // Getters
@@ -53,6 +56,9 @@ class Element implements JsonSerializable {
     public function getPageId() {
         return $this->page_id;
     }
+    public function getUniqueElementId() {
+        return $this->unique_element_id;
+    }
 
     // Setters
     public function setId($id) {
@@ -73,6 +79,9 @@ class Element implements JsonSerializable {
     // public function setChildrenElements($children_elements) {
     //     $this->children_elements = $children_elements;
     // }
+    public function setUniqueElementId($unique_element_id) {
+        $this->unique_element_id = $unique_element_id;
+    }
 
     public function jsonSerialize() {
         return [
@@ -83,6 +92,7 @@ class Element implements JsonSerializable {
             'configuration' => $this->configuration ? $this->configuration->jsonSerialize() : null,
             // 'children_elements' => $this->children_elements,
             'page_id' => $this->page_id,
+            'unique_element_id' => $this->unique_element_id
         ];
     }
 }

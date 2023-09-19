@@ -66,56 +66,34 @@ class PageService {
             return [];
         }
     }
+    function generateNewId() {
+        return uniqid('element_', true);
+    }
+    function generateNewConfigId() {
+        return uniqid('config_', true);
+    }
 
     public function savePage($data, $pageId) {
         $oldElements = $this->elementService->getAllElementsByPageId($pageId);
-        // print_r($oldElements);
-        // print_r($data);
-
-
         foreach ($data as $newElement) {
-            $exists = false;
-            print_r("TRUE");
-
+            $exists = false;  // Reset for each newElement
             foreach ($oldElements as $oldElement) {
                 if (is_array($newElement) && is_object($oldElement)) {
-                    if ($newElement['id'] == $oldElement->getId()) {
+                    if ($newElement['unique_element_id'] === $oldElement->getUniqueElementId()) {
                         $exists = true;
-                        // Create Configuration Object
-                        $configurationObject = new Configuration(
-                            $newElement['configuration']['id'],
-                            $newElement['configuration']['text_color'],
-                            $newElement['configuration']['background_color'],
-                            $newElement['configuration']['border_color'],
-                            $newElement['configuration']['font_size'],
-                            $newElement['configuration']['font_family'],
-                            $newElement['configuration']['content'],
-                            $newElement['configuration']['element_type'],
-                            $newElement['configuration']['margin'],
-                            $newElement['configuration']['padding'],
-                            $newElement['configuration']['border_width'],
-                            $newElement['configuration']['border_style'],
-                            $newElement['configuration']['border_radius'],
-                        );
-                        $elementObject = new Element(
-                            $newElement['id'],
-                            $newElement['type'],
-                            $newElement['name'],
-                            $newElement['is_custom'],
-                            $configurationObject,
-                            $newElement['page_id']
-                        );
-
-                        $this->elementService->updateElement($elementObject);
                         break;
+                    } else {
+                        $exists = false;
                     }
                 } else {
                     error_log("Mismatched types or unexpected data structures.");
                 }
             }
-
-            if (!$exists) {
-
+            // OVDE UNOSIS SENDJEVENGER
+            if ($exists) {
+                $exists = true;
+                error_log("Element exists. Updating...");
+                
                 $configurationObject = new Configuration(
                     $newElement['configuration']['id'],
                     $newElement['configuration']['text_color'],
@@ -137,15 +115,47 @@ class PageService {
                     $newElement['name'],
                     $newElement['is_custom'],
                     $configurationObject,
-                    $newElement['page_id']
+                    $newElement['page_id'],
+                    $newElement['unique_element_id']
                 );
+                error_log("Element exists. Updated.");
 
-                // return $elementObject;
+                $this->elementService->updateElement($elementObject);
+                break;
+                var_dump("JEBENO POSTOJI VEC TAKAV ELEMENT SA TAKVIM ID-OM");
+            }
+            if (!$exists) {
+                // THEN CREATE A NEW ONE
+                var_dump("NE POSTOJI I MORAMO GA KREIRATIU");
+                $configurationObject = new Configuration(
+                    $newElement['configuration']['id'] = $this->generateNewConfigId(),
+                    $newElement['configuration']['text_color'],
+                    $newElement['configuration']['background_color'],
+                    $newElement['configuration']['border_color'],
+                    $newElement['configuration']['font_size'],
+                    $newElement['configuration']['font_family'],
+                    $newElement['configuration']['content'],
+                    $newElement['configuration']['element_type'],
+                    $newElement['configuration']['margin'],
+                    $newElement['configuration']['padding'],
+                    $newElement['configuration']['border_width'],
+                    $newElement['configuration']['border_style'],
+                    $newElement['configuration']['border_radius'],
+                );
+                $elementObject = new Element(
+                    $newElement['id'] = $this->generateNewId(),
+                    $newElement['type'],
+                    $newElement['name'],
+                    $newElement['is_custom'] = 1,
+                    $configurationObject,
+                    $newElement['page_id'],
+                    $newElement['unique_element_id']
+                );
+                error_log("Element does not exist. Inserted.");
+
                 $this->elementService->createElement($elementObject, $pageId);
             }
         }
-
-        // return $data;
     }
 
     // foreach ($data as $newElement) {
@@ -164,4 +174,6 @@ class PageService {
     //     }
     // }
     // return $data;
+
+
 }

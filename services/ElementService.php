@@ -130,7 +130,7 @@ class ElementService {
                 $configuration = null; // or a new Configuration with default values
             }
 
-            $element = new Element($row['id'], $row['type'], $row['name'], $row['is_custom'], $configuration, $row['page_id']);
+            $element = new Element($row['id'], $row['type'], $row['name'], $row['is_custom'], $configuration, $row['page_id'], $row['unique_element_id']);
             array_push($elements, $element);
         }
         return $elements;
@@ -142,7 +142,7 @@ class ElementService {
 
             // Update the Element table
             $elementQuery = "UPDATE " . $this->table_name . " 
-                             SET type = :type, name = :name, is_custom = :is_custom, page_id = :page_id 
+                             SET type = :type, name = :name, is_custom = 1, page_id = :page_id 
                              WHERE id = :id";
             $elementStmt = $this->db->prepare($elementQuery);
 
@@ -218,18 +218,20 @@ class ElementService {
     public function createElement(Element $element, $pageId): bool {
         try {
             // Insert new Element
-            $elementQuery = "INSERT INTO " . $this->table_name . " (type, name, is_custom, page_id) 
-                             VALUES (:type, :name, :is_custom, :page_id)";
+
+            $elementQuery = "INSERT INTO " . $this->table_name . " (type, name, is_custom, page_id, unique_element_id) 
+            VALUES (:type, :name, 1, :page_id, :unique_element_id)";
             $elementStmt = $this->db->prepare($elementQuery);
 
             $type = $element->getType();
             $name = $element->getName();
-            $is_custom = $element->getIsCustom();
+            $uniqueElementId = $this->generateUniqueId();
+
 
             $elementStmt->bindParam(':type', $type);
             $elementStmt->bindParam(':name', $name);
-            $elementStmt->bindParam(':is_custom', $is_custom, PDO::PARAM_INT);
             $elementStmt->bindParam(':page_id', $pageId, PDO::PARAM_INT);
+            $elementStmt->bindParam(':unique_element_id', $uniqueElementId);
             $elementStmt->execute();
 
             $lastElementId = $this->db->lastInsertId();
@@ -238,8 +240,7 @@ class ElementService {
             $configuration = $element->getConfiguration();
             if ($configuration !== null) {
                 $configQuery = "INSERT INTO configurations (text_color, background_color, border_color, font_size, font_family, content, element_type, margin, padding, border_width, border_style, border_radius)
-                                VALUES (:text_color, :background_color, :border_color, :font_size, :font_family, :content, :element_type, :margin, :padding, :border_width, :border_style, :border_radius)";
-
+                            VALUES (:text_color, :background_color, :border_color, :font_size, :font_family, :content, :element_type, :margin, :padding, :border_width, :border_style, :border_radius)";
                 $configStmt = $this->db->prepare($configQuery);
 
                 $text_color = $configuration->getTextColor();
@@ -269,11 +270,34 @@ class ElementService {
                 $configStmt->bindParam(':border_radius', $border_radius);
 
                 $configStmt->execute();
+
+                $lastConfigId = $this->db->lastInsertId();
+
+                // Update the Element with this Configuration ID
+                $updateElementQuery = "UPDATE " . $this->table_name . " SET configuration_id = :configuration_id WHERE id = :element_id";
+                $updateStmt = $this->db->prepare($updateElementQuery);
+                $updateStmt->bindParam(':configuration_id', $lastConfigId, PDO::PARAM_INT);
+                $updateStmt->bindParam(':element_id', $lastElementId, PDO::PARAM_INT);
+                $updateStmt->execute();
             }
             return true;
         } catch (PDOException $e) {
-            // Handle exception
+            print_r("Error: " . $e->getMessage());
             return false;
         }
+    }
+
+    function generateUniqueId() {
+        return sprintf(
+            '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0x0fff) | 0x4000,
+            mt_rand(0, 0x3fff) | 0x8000,
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
     }
 }
