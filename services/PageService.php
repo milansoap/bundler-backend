@@ -76,7 +76,6 @@ class PageService {
     public function savePage($data, $pageId) {
         $oldElements = $this->elementService->getAllElementsByPageId($pageId);
         foreach ($data['elements'] as $newElement) {
-            print_r($data);
             $exists = false;  // Reset for each newElement
             foreach ($oldElements as $oldElement) {
                 if (is_array($newElement) && is_object($oldElement)) {
@@ -98,8 +97,6 @@ class PageService {
                     $newElement['configuration']['text_color'],
                     $newElement['configuration']['background_color'],
                     $newElement['configuration']['border_color'],
-                    $newElement['configuration']['font_size'],
-                    $newElement['configuration']['font_family'],
                     $newElement['configuration']['content'],
                     $newElement['configuration']['element_type'],
                     $newElement['configuration']['margin'],
@@ -127,8 +124,6 @@ class PageService {
                     $newElement['configuration']['text_color'],
                     $newElement['configuration']['background_color'],
                     $newElement['configuration']['border_color'],
-                    $newElement['configuration']['font_size'],
-                    $newElement['configuration']['font_family'],
                     $newElement['configuration']['content'],
                     $newElement['configuration']['element_type'],
                     $newElement['configuration']['margin'],

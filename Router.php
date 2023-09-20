@@ -8,7 +8,7 @@ use UserController;
 use AuthController;
 use ElementController;
 use PageController;
-
+use LogController;
 
 class Router {
     public function route(RequestApiDTO $requestDTO) {
@@ -19,6 +19,7 @@ class Router {
         $authController = new AuthController();
         $elementController = new ElementController();
         $pageController = new PageController();
+        $logController = new LogController();
 
 
 
@@ -37,6 +38,9 @@ class Router {
                 break;
             case 'register':
                 $authController->register();
+                break;
+            case 'logs':
+                $logController->handleLogRequest($requestDTO->method, $id);
                 break;
             default:
                 http_response_code(404);
