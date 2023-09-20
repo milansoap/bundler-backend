@@ -90,11 +90,8 @@ class PageService {
                     error_log("Mismatched types or unexpected data structures.");
                 }
             }
-            // OVDE UNOSIS SENDJEVENGER
             if ($exists) {
-                // error_log($newElement['unique_element_id'])
                 $exists = true;
-                // error_log("Element exists. Updating...");
 
                 $configurationObject = new Configuration(
                     $newElement['configuration']['id'],
@@ -122,13 +119,9 @@ class PageService {
                 );
 
                 $this->elementService->updateElement($elementObject);
-                // var_dump("JEBENO POSTOJI VEC TAKAV ELEMENT SA TAKVIM ID-OM");
             }
             if (!$exists) {
-                print_r("tu sam");
 
-                // THEN CREATE A NEW ONE
-                // var_dump("NE POSTOJI I MORAMO GA KREIRATIU");
                 $configurationObject = new Configuration(
                     $newElement['configuration']['id'] = $this->generateNewConfigId(),
                     $newElement['configuration']['text_color'],
@@ -153,7 +146,6 @@ class PageService {
                     $newElement['page_id'],
                     $newElement['unique_element_id']
                 );
-                // error_log("Element does not exist. Inserted.");
 
                 $this->elementService->createElement($elementObject, $pageId);
             }

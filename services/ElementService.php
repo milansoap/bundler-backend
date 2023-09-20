@@ -36,8 +36,6 @@ class ElementService {
                     $configRow['text_color'],
                     $configRow['background_color'],
                     $configRow['border_color'],
-                    $configRow['font_size'],
-                    $configRow['font_family'],
                     $configRow['content'],
                     $configRow['element_type'],
                     $configRow['margin'],
@@ -75,8 +73,6 @@ class ElementService {
                     $configRow['text_color'],
                     $configRow['background_color'],
                     $configRow['border_color'],
-                    $configRow['font_size'],
-                    $configRow['font_family'],
                     $configRow['content'],
                     $configRow['element_type'],
                     $configRow['margin'],
@@ -116,8 +112,6 @@ class ElementService {
                     $configRow['text_color'],
                     $configRow['background_color'],
                     $configRow['border_color'],
-                    $configRow['font_size'],
-                    $configRow['font_family'],
                     $configRow['content'],
                     $configRow['element_type'],
                     $configRow['margin'],
@@ -176,7 +170,7 @@ class ElementService {
             if ($configuration !== null) {
                 $configQuery = "UPDATE configurations 
                                 SET text_color = :text_color, background_color = :background_color, border_color = :border_color,
-                                font_size = :font_size, font_family = :font_family, content = :content, element_type = :element_type,
+                                 content = :content, element_type = :element_type,
                                 margin = :margin, padding = :padding, border_width = :border_width, border_style = :border_style, 
                                 border_radius = :border_radius
                                 WHERE id = :configuration_id";
@@ -189,8 +183,6 @@ class ElementService {
                 $text_color = $configuration->getTextColor();
                 $background_color = $configuration->getBackgroundColor();
                 $border_color = $configuration->getBorderColor();
-                $font_size = $configuration->getFontSize();
-                $font_family = $configuration->getFontFamily();
                 $content = $configuration->getContent();
                 $element_type = $configuration->getElementType();
                 $margin = $configuration->getMargin();
@@ -204,8 +196,6 @@ class ElementService {
                 $configStmt->bindParam(':text_color', $text_color);
                 $configStmt->bindParam(':background_color', $background_color);
                 $configStmt->bindParam(':border_color', $border_color);
-                $configStmt->bindParam(':font_size', $font_size);
-                $configStmt->bindParam(':font_family', $font_family);
                 $configStmt->bindParam(':content', $content);
                 $configStmt->bindParam(':element_type', $element_type);
                 $configStmt->bindParam(':margin', $margin);
@@ -253,15 +243,13 @@ class ElementService {
             // Insert new Configuration
             $configuration = $element->getConfiguration();
             if ($configuration !== null) {
-                $configQuery = "INSERT INTO configurations (text_color, background_color, border_color, font_size, font_family, content, element_type, margin, padding, border_width, border_style, border_radius)
-                            VALUES (:text_color, :background_color, :border_color, :font_size, :font_family, :content, :element_type, :margin, :padding, :border_width, :border_style, :border_radius)";
+                $configQuery = "INSERT INTO configurations (text_color, background_color, border_color, content, element_type, margin, padding, border_width, border_style, border_radius)
+                            VALUES (:text_color, :background_color, :border_color, :content, :element_type, :margin, :padding, :border_width, :border_style, :border_radius)";
                 $configStmt = $this->db->prepare($configQuery);
 
                 $text_color = $configuration->getTextColor();
                 $background_color = $configuration->getBackgroundColor();
                 $border_color = $configuration->getBorderColor();
-                $font_size = $configuration->getFontSize();
-                $font_family = $configuration->getFontFamily();
                 $content = $configuration->getContent();
                 $element_type = $configuration->getElementType();
                 $margin = $configuration->getMargin();
@@ -273,8 +261,6 @@ class ElementService {
                 $configStmt->bindParam(':text_color', $text_color);
                 $configStmt->bindParam(':background_color', $background_color);
                 $configStmt->bindParam(':border_color', $border_color);
-                $configStmt->bindParam(':font_size', $font_size);
-                $configStmt->bindParam(':font_family', $font_family);
                 $configStmt->bindParam(':content', $content);
                 $configStmt->bindParam(':element_type', $element_type);
                 $configStmt->bindParam(':margin', $margin);

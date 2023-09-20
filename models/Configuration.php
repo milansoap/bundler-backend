@@ -5,8 +5,6 @@ class Configuration implements JsonSerializable {
     private $textColor;
     private $backgroundColor;
     private $borderColor;
-    private $fontSize;
-    private $fontFamily;
     private $content;
     private $elementType;
     private $margin;
@@ -20,8 +18,6 @@ class Configuration implements JsonSerializable {
         $textColor = null,
         $backgroundColor = null,
         $borderColor = null,
-        $fontSize = null,
-        $fontFamily = null,
         $content = null,
         $elementType = null,
         $margin = null,
@@ -34,8 +30,6 @@ class Configuration implements JsonSerializable {
         $this->textColor = $textColor;
         $this->backgroundColor = $backgroundColor;
         $this->borderColor = $borderColor;
-        $this->fontSize = $fontSize;
-        $this->fontFamily = $fontFamily;
         $this->content = $content;
         $this->elementType = $elementType;
         $this->margin = $margin;
@@ -58,12 +52,7 @@ class Configuration implements JsonSerializable {
     public function getBorderColor() {
         return $this->borderColor;
     }
-    public function getFontSize() {
-        return $this->fontSize;
-    }
-    public function getFontFamily() {
-        return $this->fontFamily;
-    }
+  
     public function getContent() {
         return $this->content;
     }
@@ -99,12 +88,7 @@ class Configuration implements JsonSerializable {
     public function setBorderColor($borderColor) {
         $this->borderColor = $borderColor;
     }
-    public function setFontSize($fontSize) {
-        $this->fontSize = $fontSize;
-    }
-    public function setFontFamily($fontFamily) {
-        $this->fontFamily = $fontFamily;
-    }
+
     public function setContent($content) {
         $this->content = $content;
     }
@@ -133,8 +117,6 @@ class Configuration implements JsonSerializable {
             'text_color' => $this->textColor,
             'background_color' => $this->backgroundColor,
             'border_color' => $this->borderColor,
-            'font_size' => $this->fontSize,
-            'font_family' => $this->fontFamily,
             'content' => $this->content,
             'element_type' => $this->elementType,
             'margin' => $this->margin,
