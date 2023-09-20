@@ -11,12 +11,14 @@ class PageService {
     private $db;
     private $table_name = "pages";
     private $elementService;
+    private $logService;
 
 
     public function __construct() {
         $database = new Database();
         $this->db = $database->connect();
         $this->elementService = new ElementService();
+        $this->logService = new LogService();
     }
 
     public function getAllPages(): array {
@@ -145,6 +147,8 @@ class PageService {
                 $this->elementService->createElement($elementObject, $pageId);
             }
         }
+        // $newLog = new Log($pageId, date('Y-m-d H:i:s'));
+        $this->logService->createLog($pageId);
     }
 
     // foreach ($data as $newElement) {
