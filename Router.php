@@ -9,6 +9,7 @@ use AuthController;
 use ElementController;
 use PageController;
 use LogController;
+use GenerateController;
 
 class Router {
     public function route(RequestApiDTO $requestDTO) {
@@ -20,6 +21,7 @@ class Router {
         $elementController = new ElementController();
         $pageController = new PageController();
         $logController = new LogController();
+        $generateController = new GenerateController();
 
 
 
@@ -41,6 +43,9 @@ class Router {
                 break;
             case 'logs':
                 $logController->handleLogRequest($requestDTO->method, $id);
+                break;
+            case 'generate':
+                $generateController->generatePage($id);
                 break;
             default:
                 http_response_code(404);

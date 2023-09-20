@@ -1,6 +1,8 @@
     <?php
 
     require_once './autoloader.php';
+    include 'generatedScript.php';
+
 
     use Cors\Cors;
     use DTO\RequestApiDTO;

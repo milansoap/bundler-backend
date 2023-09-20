@@ -9,6 +9,7 @@ require_once './dto/LoginRequestDTO.php';
 require_once './controllers/ElementController.php';
 require_once './controllers/PageController.php';
 require_once './controllers/LogController.php';
+require_once './controllers/GenerateController.php';
 
 
 use Cors\Cors;
